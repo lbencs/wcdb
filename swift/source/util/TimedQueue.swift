@@ -52,11 +52,13 @@ final class TimedQueue<Key: Hashable> {
         let signal = list.isEmpty
 
         if let index = map.index(forKey: key) {
-            list.remove(at: map[index].value)
+            if map[index].value < list.count {
+                list.remove(at: map[index].value)
+            }
             map.remove(at: index)
         }
 
-        list.append((key, SteadyClock.now()+delay))
+        list.append((key, SteadyClock.now() + delay))
         map[key] = list.startIndex
         if signal {
             conditionLock.signal()
